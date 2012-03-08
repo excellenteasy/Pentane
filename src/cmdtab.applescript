@@ -1,3 +1,4 @@
+property detectedBrowser : "com.google.chrome"
 property timeDelay : 1
 
 on run
@@ -14,7 +15,10 @@ on idle
 end idle
 
 on runCode()
-	set UrlFilePath to POSIX path of (path to me) & "Contents/Resources/url.applescript"
+	set myPath to POSIX path of (path to me) & "Contents/Resources/"
+	set detectedBrowser to do shell script myPath & "defbrowser"
+	
+	set UrlFilePath to myPath & "url.applescript"
 	try
 		set srcFile to load script UrlFilePath
 		set theUrl to (theUrl of srcFile)
@@ -31,39 +35,42 @@ on runCode()
 end runCode
 
 on loopThruChrome(input)
-	tell application "Google Chrome"
-		activate
-		
-		if (count every window) = 0 then
-			make new window
-		end if
-		
-		set found to false
-		set theTabIndex to -1
-		repeat with theWindow in every window
-			set theTabIndex to 0
-			repeat with theTab in every tab of theWindow
-				set theTabIndex to theTabIndex + 1
-				if theTab's URL contains input then
-					set found to true
+	if detectedBrowser is "com.google.chrome" then
+		tell application "Google Chrome"
+			activate
+			
+			if (count every window) = 0 then
+				make new window
+			end if
+			
+			set found to false
+			set theTabIndex to -1
+			repeat with theWindow in every window
+				set theTabIndex to 0
+				repeat with theTab in every tab of theWindow
+					set theTabIndex to theTabIndex + 1
+					if theTab's URL contains input then
+						set found to true
+						exit repeat
+					end if
+				end repeat
+				
+				if found then
+					set active tab index of theWindow to theTabIndex
 					exit repeat
 				end if
 			end repeat
 			
-			if found then
-				set active tab index of theWindow to theTabIndex
-				exit repeat
+			if not found then
+				set currentClip to get the clipboard
+				set the clipboard to (input as text)
+				tell application "System Events"
+					keystroke "t" using command down
+					keystroke "v" using command down
+					keystroke return
+				end tell
+				set the clipboard to currentClip
 			end if
-		end repeat
-		
-		if not found then
-			set currentClip to get the clipboard
-			set the clipboard to (input as text)
-			tell application "System Events"
-				keystroke "t" using command down
-				keystroke "v" using command down
-				keystroke return
-			end tell
-		end if
-	end tell
+		end tell
+	end if
 end loopThruChrome
