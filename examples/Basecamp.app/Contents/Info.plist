@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>cmdtab</string>
+	<string>Basecamp</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
@@ -36,7 +36,7 @@
 		<key>positionOfDivider</key>
 		<real>333</real>
 		<key>savedFrame</key>
-		<string>7 56 602 597 0 0 1280 778 </string>
+		<string>49 115 602 597 0 0 1280 778 </string>
 		<key>selectedTabView</key>
 		<string>result</string>
 	</dict>
