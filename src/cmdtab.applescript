@@ -20,7 +20,7 @@ on runCode()
 		set theUrl to (theUrl of srcFile)
 		loopThruChrome(theUrl)
 	on error
-		display dialog "Please provide the url of your webapp" default answer "https://basecamp.com/1756776"
+		display dialog "Please provide the url of your webapp" default answer "http://keeplook.in"
 		set theAnswer to (text returned of result)
 		script UrlFile
 			property theUrl : theAnswer
@@ -28,14 +28,6 @@ on runCode()
 		store script UrlFile in UrlFilePath
 		loopThruChrome(theAnswer)
 	end try
-	--set appFileName to name of (info for (path to me))
-	--do shell script "x=" & appFileName
-	--set myProcess to (do shell script "echo $(echo $x|sed 's/.app//g')")
-	--display dialog myProcess
-	--tell application "System Events"
-	--	set frontProcess to first process whose frontmost is true
-	--	set visible of frontProcess to false
-	--end tell
 end runCode
 
 on loopThruChrome(input)
