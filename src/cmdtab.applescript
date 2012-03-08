@@ -69,7 +69,7 @@ on loopThruChrome(input)
 					keystroke "v" using command down
 					keystroke return
 				end tell
-				set the clipboard to currentClip
+				--set the clipboard to currentClip
 			end if
 		end tell
 	end if
