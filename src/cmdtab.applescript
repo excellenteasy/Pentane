@@ -32,7 +32,7 @@ end runCode
 
 on loopThruChrome(input)
 	tell application "Google Chrome"
-		set theUrl to input
+		activate
 		
 		if (count every window) = 0 then
 			make new window
@@ -44,21 +44,26 @@ on loopThruChrome(input)
 			set theTabIndex to 0
 			repeat with theTab in every tab of theWindow
 				set theTabIndex to theTabIndex + 1
-				if theTab's URL starts with theUrl then
+				if theTab's URL contains input then
 					set found to true
 					exit repeat
 				end if
 			end repeat
 			
 			if found then
-				set active tab index of window 1 to theTabIndex
+				set active tab index of theWindow to theTabIndex
 				exit repeat
 			end if
 		end repeat
 		
 		if not found then
-			tell window 1 to make new tab with properties {URL:theUrl}
+			set currentClip to get the clipboard
+			set the clipboard to (input as text)
+			tell application "System Events"
+				keystroke "t" using command down
+				keystroke "v" using command down
+				keystroke return
+			end tell
 		end if
-		activate
 	end tell
 end loopThruChrome
