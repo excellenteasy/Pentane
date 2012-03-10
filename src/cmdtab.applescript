@@ -24,53 +24,52 @@ on runCode()
 		set theUrl to (theUrl of srcFile)
 		loopThruChrome(theUrl)
 	on error
-		display dialog "Please provide the url of your webapp" default answer "http://keeplook.in"
-		set theAnswer to (text returned of result)
-		script UrlFile
-			property theUrl : theAnswer
-		end script
-		store script UrlFile in UrlFilePath
-		loopThruChrome(theAnswer)
+		try
+			display dialog "Please provide the url of your webapp" default answer "keeplook.in"
+			set theAnswer to (text returned of result)
+			script UrlFile
+				property theUrl : theAnswer
+			end script
+			store script UrlFile in UrlFilePath
+			loopThruChrome(theAnswer)
+		on error
+			quit
+		end try
 	end try
 end runCode
 
 on loopThruChrome(input)
-	if detectedBrowser is "com.google.chrome" then
-		tell application "Google Chrome"
-			activate
-			
-			if (count every window) = 0 then
-				make new window
-			end if
-			
-			set found to false
-			set theTabIndex to -1
-			repeat with theWindow in every window
-				set theTabIndex to 0
-				repeat with theTab in every tab of theWindow
-					set theTabIndex to theTabIndex + 1
-					if theTab's URL contains input then
-						set found to true
-						exit repeat
-					end if
-				end repeat
-				
-				if found then
-					set active tab index of theWindow to theTabIndex
+	tell application "Google Chrome"
+		activate
+		
+		if (count every window) = 0 then
+			make new window
+		end if
+		
+		set found to false
+		set theTabIndex to -1
+		repeat with theWindow in every window
+			set theTabIndex to 0
+			repeat with theTab in every tab of theWindow
+				set theTabIndex to theTabIndex + 1
+				if theTab's URL contains input then
+					set found to true
 					exit repeat
 				end if
 			end repeat
 			
-			if not found then
-				set currentClip to get the clipboard
-				set the clipboard to (input as text)
-				tell application "System Events"
-					keystroke "t" using command down
-					keystroke "v" using command down
-					keystroke return
-				end tell
-				--set the clipboard to currentClip
+			if found then
+				set active tab index of theWindow to theTabIndex
+				exit repeat
 			end if
-		end tell
-	end if
+		end repeat
+		
+		if not found then
+			if input starts with "http" then
+				tell window 1 to make new tab with properties {URL:input}
+			else
+				tell window 1 to make new tab with properties {URL:"http://" & input}
+			end if
+		end if
+	end tell
 end loopThruChrome
